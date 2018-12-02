@@ -74,6 +74,41 @@ def getNNCarData(fileString ="datasets/car.data.txt", limit=100000 ):
     return examples
 
 
+def getNNXorData(fileString="datasets/xor.data.txt", limit=100000):
+    """
+    returns limit # of examples from file passed as string
+    """
+    examples = []
+    attrValues = {}
+    data = open(fileString)
+    attrs = ['x', 'y']
+    attr_values = [['0', '1'], ['0', '1']]
+
+    attrNNList = [('x', {'0': getList(1, 2), '1': getList(2, 2)}),
+                  ('y', {'0': getList(1, 2), '1': getList(2, 2)})]
+
+    classNNList = {'0': [1, 0], '1': [0, 1]}
+
+    for index in range(len(attrs)):
+        attrValues[attrs[index]] = attrNNList[index][1]
+
+    lineNum = 0
+    for line in data:
+        inVec = []
+        outVec = []
+        count = 0
+        for val in line.split(','):
+            if count == 2:
+                outVec = classNNList[val[0]];
+            else:
+                inVec.append(attrValues[attrs[count]][val])
+            count += 1
+        examples.append((inVec, outVec))
+        lineNum += 1
+        if (lineNum >= limit):
+            break
+    return examples
+
 def buildExamplesFromPenData(size=10000):
     """
     build Neural-network friendly data struct
@@ -126,7 +161,21 @@ def buildExamplesFromCarData(size=200):
     tests = len(carDataTrainList)-size
     carDataTestList = [carDataTrainList.pop(random.randint(0,tests+size-t-1)) for t in xrange(tests)]
     return carDataTrainList, carDataTestList
-    
+
+def buildExamplesFromXorData(size=4):
+    xorData = getNNXorData()
+    xorDataTrainList = []
+    for cdRec in xorData:
+        tmpInVec = []
+        for cdInRec in cdRec[0] :
+            for val in cdInRec :
+                tmpInVec.append(val)
+        #print "in :" + str(cdRec) + " in vec : " + str(tmpInVec)
+        tmpList = (tmpInVec, cdRec[1])
+        xorDataTrainList.append(tmpList)
+    #print "car data list : " + str(carDataList)
+    xorDataTestList = xorDataTrainList
+    return xorDataTrainList, xorDataTestList
 
 def buildPotentialHiddenLayers(numIns, numOuts):
     """
