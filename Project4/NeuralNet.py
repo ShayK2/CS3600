@@ -129,7 +129,7 @@ class Perceptron(object):
         outStr += 'Node input weights %s\n'%str(self.weights)
         return outStr
 
-class NeuralNet(object):                                    
+class NeuralNet(object):
     """
     Class to hold the net of perceptrons and implement functions for it.
     """          
@@ -259,6 +259,9 @@ class NeuralNet(object):
             for numLayer in xrange(0,self.numLayers):
                 layer = self.layers[numLayer]
                 for numNeuron in xrange(len(layer)):
+                    """
+                    Note to self, look at this line later
+                    """
                     weightMod = layer[numNeuron].updateWeights(allLayerOutput[numLayer], alpha, deltas[numLayer][numNeuron])
                     averageWeightChange += weightMod
                     numWeights += layer[numNeuron].inSize
@@ -301,9 +304,6 @@ def buildNeuralNet(examples, alpha=0.1, weightChangeThreshold = 0.00008,hiddenLa
     nnet = NeuralNet(layerList)                                                    
     if startNNet is not None:
         nnet =startNNet
-    """
-    YOUR CODE
-    """
     iteration=0
     trainError=0
     weightMod=1
